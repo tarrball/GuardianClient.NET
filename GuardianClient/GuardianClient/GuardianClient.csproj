@@ -1,21 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
 
-        <!-- NuGet Package Properties -->
-        <PackageId>GuardianClient.NET</PackageId>
-        <Version>0.1.0-alpha</Version>
-        <Authors>Andrew Tarr</Authors>
-        <Description>A .NET API wrapper for Guardian services</Description>
-        <PackageTags>guardian;api;client;wrapper</PackageTags>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tarrball/GuardianClient.NET</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/tarrball/GuardianClient.NET</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
+    <!-- NuGet Package Properties -->
+    <PackageId>GuardianClient.NET</PackageId>
+    <Version>0.1.0-alpha</Version>
+    <Authors>Andrew Tarr</Authors>
+    <Description>A .NET API wrapper for Guardian services</Description>
+    <PackageTags>guardian;api;client;wrapper</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tarrball/GuardianClient.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tarrball/GuardianClient.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
 </Project>
