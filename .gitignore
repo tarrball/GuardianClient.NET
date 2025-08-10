@@ -45,6 +45,9 @@ CodeCoverage/
 .DS_Store
 .DS_Store?
 
+# Project specific
+specs/
+
 # MSBuild Binary and Structured Log
 *.binlog
 
