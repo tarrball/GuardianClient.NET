@@ -41,6 +41,10 @@ ScaffoldingReadMe.txt
 *~
 CodeCoverage/
 
+# macOS
+.DS_Store
+.DS_Store?
+
 # MSBuild Binary and Structured Log
 *.binlog
 
