@@ -3,8 +3,14 @@ name: Deploy to NuGet
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'GuardianClient/GuardianClient/**'
+      - '!GuardianClient/GuardianClient.Tests/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'GuardianClient/GuardianClient/**'
+      - '!GuardianClient/GuardianClient.Tests/**'
 
 env:
   PROJECT_PATH: 'GuardianClient/GuardianClient/GuardianClient.csproj'
