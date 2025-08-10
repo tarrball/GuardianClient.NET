@@ -28,7 +28,7 @@ jobs:
         run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test ${{ env.PROJECT_PATH }} --no-build --configuration Release --verbosity normal
 
   deploy:
     needs: build-and-test
