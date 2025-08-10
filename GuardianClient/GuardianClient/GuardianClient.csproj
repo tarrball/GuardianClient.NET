@@ -7,7 +7,7 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>GuardianClient.NET</PackageId>
-    <Version>0.1.0-alpha</Version>
+    <Version>0.2.0-alpha</Version>
     <Authors>Andrew Tarr</Authors>
     <Description>A .NET API wrapper for Guardian services</Description>
     <PackageTags>guardian;api;client;wrapper</PackageTags>
