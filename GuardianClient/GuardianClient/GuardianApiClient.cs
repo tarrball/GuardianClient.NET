@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using GuardianClient.Models;
 
@@ -6,11 +7,19 @@ namespace GuardianClient;
 public class GuardianApiClient : IDisposable
 {
     private readonly HttpClient _httpClient;
+
     private readonly string _apiKey;
+
     private readonly bool _ownsHttpClient;
-    private bool _disposed = false;
+
+    private bool _disposed;
 
     private const string BaseUrl = "https://content.guardianapis.com";
+
+    private static readonly JsonSerializerOptions _JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     /// <summary>
     /// Initializes a new instance of GuardianApiClient with dependency-injected HttpClient (recommended)
@@ -19,8 +28,11 @@ public class GuardianApiClient : IDisposable
     /// <param name="apiKey">Your Guardian API key</param>
     public GuardianApiClient(HttpClient httpClient, string apiKey)
     {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
+
+        _httpClient = httpClient;
+        _apiKey = apiKey;
         _ownsHttpClient = false;
 
         ConfigureHttpClient();
@@ -33,7 +45,9 @@ public class GuardianApiClient : IDisposable
     /// <param name="apiKey">Your Guardian API key</param>
     public GuardianApiClient(string apiKey)
     {
-        _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+        ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
+
+        _apiKey = apiKey;
         _httpClient = new HttpClient();
         _ownsHttpClient = true;
 
@@ -42,8 +56,20 @@ public class GuardianApiClient : IDisposable
 
     private void ConfigureHttpClient()
     {
+        var packageVersion = GetPackageVersion();
+
         _httpClient.BaseAddress = new Uri(BaseUrl);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "GuardianClient.NET/0.1.0-alpha");
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
+    }
+
+    private string GetPackageVersion()
+    {
+        var packageVersion = Assembly
+            .GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
+            .InformationalVersion;
+
+        return packageVersion;
     }
 
     /// <summary>
@@ -63,27 +89,52 @@ public class GuardianApiClient : IDisposable
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
         if (!string.IsNullOrWhiteSpace(query))
+        {
             parameters.Add($"q={Uri.EscapeDataString(query)}");
+        }
 
         if (pageSize.HasValue)
+        {
             parameters.Add($"page-size={pageSize.Value}");
+        }
 
         if (page.HasValue)
+        {
             parameters.Add($"page={page.Value}");
+        }
 
         var url = $"/search?{string.Join("&", parameters)}";
-
         var response = await _httpClient.GetAsync(url, cancellationToken);
+
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var wrapper = JsonSerializer.Deserialize<ResponseWrapper<ContentSearchResponse>>(content, _JsonOptions);
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        return wrapper?.Response;
+    }
 
-        var wrapper = JsonSerializer.Deserialize<ApiResponseWrapper<ContentSearchResponse>>(content, options);
+    /// <summary>
+    /// Get a single content item by its ID/path
+    /// </summary>
+    /// <param name="itemId">The content item ID (path from Guardian API)</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Single item response with content details</returns>
+    public async Task<SingleItemResponse?> GetItemAsync(
+        string itemId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(itemId);
+
+        var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
+        var url = $"/{itemId}?{string.Join("&", parameters)}";
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var wrapper = JsonSerializer.Deserialize<ResponseWrapper<SingleItemResponse>>(content, _JsonOptions);
+
         return wrapper?.Response;
     }
 
@@ -93,16 +144,24 @@ public class GuardianApiClient : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    /// <summary>
+    /// Disposes the <see cref="HttpClient"/> if:
+    /// 1. This instance owns it, and
+    /// 2. Disposal is being triggered explicitly (not already disposed or disposing).
+    /// This prevents disposing of HttpClient instances managed by dependency injection.
+    /// </summary>
+    private void Dispose(bool disposing)
     {
-        if (!_disposed && disposing)
+        if (_disposed || !disposing)
         {
-            if (_ownsHttpClient)
-            {
-                _httpClient?.Dispose();
-            }
-
-            _disposed = true;
+            return;
         }
+
+        if (_ownsHttpClient)
+        {
+            _httpClient.Dispose();
+        }
+
+        _disposed = true;
     }
 }
