@@ -45,16 +45,24 @@ public class GuardianApiClientTests : TestBase
 
         var contentItem = searchResult.Results.First();
         var itemId = contentItem.Id;
-        var singleItemResult = await ApiClient.GetItemAsync(itemId);
+        var singleItemResult = await ApiClient.GetItemAsync(itemId, new GuardianApiOptions { ShowFields = ["body"] });
 
         singleItemResult.ShouldNotBeNull("GetItem result should not be null");
         singleItemResult.Status.ShouldBe("ok", "API response status should be 'ok'");
         singleItemResult.Content.ShouldNotBeNull("Content should not be null");
         singleItemResult.Content.Id.ShouldBe(itemId, "Returned content ID should match requested ID");
         singleItemResult.Content.WebTitle.ShouldNotBeNullOrEmpty("Content should have a title");
+        singleItemResult.Content.Fields.ShouldNotBeNull("Fields should be populated when ShowFields is specified");
 
         Console.WriteLine($"Retrieved item: {singleItemResult.Content.WebTitle}");
         Console.WriteLine($"Item ID: {singleItemResult.Content.Id}");
         Console.WriteLine($"Published: {singleItemResult.Content.WebPublicationDate}");
+
+        if (!string.IsNullOrEmpty(singleItemResult.Content.Fields.Body))
+        {
+            Console.WriteLine($"Body length: {singleItemResult.Content.Fields.Body.Length} characters");
+            Console.WriteLine(
+                $"Body preview: {singleItemResult.Content.Fields.Body[..Math.Min(200, singleItemResult.Content.Fields.Body.Length)]}...");
+        }
     }
 }

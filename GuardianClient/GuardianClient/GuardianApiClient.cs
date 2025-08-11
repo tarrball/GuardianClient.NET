@@ -105,29 +105,29 @@ public class GuardianApiClient : IDisposable
             parameters.Add($"page={page.Value}");
         }
 
-        if (options?.ShowFields == true)
+        if (options?.ShowFields?.Length > 0)
         {
-            parameters.Add("show-fields=all");
+            parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
         }
 
-        if (options?.ShowTags == true)
+        if (options?.ShowTags?.Length > 0)
         {
-            parameters.Add("show-tags=all");
+            parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
         }
 
-        if (options?.ShowElements == true)
+        if (options?.ShowElements?.Length > 0)
         {
-            parameters.Add("show-elements=all");
+            parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
         }
 
-        if (options?.ShowReferences == true)
+        if (options?.ShowReferences?.Length > 0)
         {
-            parameters.Add("show-references=all");
+            parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
         }
 
-        if (options?.ShowBlocks == true)
+        if (options?.ShowBlocks?.Length > 0)
         {
-            parameters.Add("show-blocks=all");
+            parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
         }
 
         var url = $"/search?{string.Join("&", parameters)}";
@@ -157,29 +157,29 @@ public class GuardianApiClient : IDisposable
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
-        if (options?.ShowFields == true)
+        if (options?.ShowFields?.Length > 0)
         {
-            parameters.Add("show-fields=all");
+            parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
         }
 
-        if (options?.ShowTags == true)
+        if (options?.ShowTags?.Length > 0)
         {
-            parameters.Add("show-tags=all");
+            parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
         }
 
-        if (options?.ShowElements == true)
+        if (options?.ShowElements?.Length > 0)
         {
-            parameters.Add("show-elements=all");
+            parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
         }
 
-        if (options?.ShowReferences == true)
+        if (options?.ShowReferences?.Length > 0)
         {
-            parameters.Add("show-references=all");
+            parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
         }
 
-        if (options?.ShowBlocks == true)
+        if (options?.ShowBlocks?.Length > 0)
         {
-            parameters.Add("show-blocks=all");
+            parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
         }
 
         var url = $"/{itemId}?{string.Join("&", parameters)}";
