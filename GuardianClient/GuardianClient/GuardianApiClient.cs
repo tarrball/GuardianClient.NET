@@ -78,12 +78,14 @@ public class GuardianApiClient : IDisposable
     /// <param name="query">Search query (supports AND, OR, NOT operators)</param>
     /// <param name="pageSize">Number of results per page (1-50)</param>
     /// <param name="page">Page number for pagination</param>
+    /// <param name="options">API options for including additional response data</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Content search results</returns>
     public async Task<ContentSearchResponse?> SearchAsync(
         string? query = null,
         int? pageSize = null,
         int? page = null,
+        GuardianApiOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
@@ -103,6 +105,31 @@ public class GuardianApiClient : IDisposable
             parameters.Add($"page={page.Value}");
         }
 
+        if (options?.ShowFields == true)
+        {
+            parameters.Add("show-fields=all");
+        }
+
+        if (options?.ShowTags == true)
+        {
+            parameters.Add("show-tags=all");
+        }
+
+        if (options?.ShowElements == true)
+        {
+            parameters.Add("show-elements=all");
+        }
+
+        if (options?.ShowReferences == true)
+        {
+            parameters.Add("show-references=all");
+        }
+
+        if (options?.ShowBlocks == true)
+        {
+            parameters.Add("show-blocks=all");
+        }
+
         var url = $"/search?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
@@ -118,15 +145,43 @@ public class GuardianApiClient : IDisposable
     /// Get a single content item by its ID/path
     /// </summary>
     /// <param name="itemId">The content item ID (path from Guardian API)</param>
+    /// <param name="options">API options for including additional response data</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Single item response with content details</returns>
     public async Task<SingleItemResponse?> GetItemAsync(
         string itemId,
+        GuardianApiOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(itemId);
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
+
+        if (options?.ShowFields == true)
+        {
+            parameters.Add("show-fields=all");
+        }
+
+        if (options?.ShowTags == true)
+        {
+            parameters.Add("show-tags=all");
+        }
+
+        if (options?.ShowElements == true)
+        {
+            parameters.Add("show-elements=all");
+        }
+
+        if (options?.ShowReferences == true)
+        {
+            parameters.Add("show-references=all");
+        }
+
+        if (options?.ShowBlocks == true)
+        {
+            parameters.Add("show-blocks=all");
+        }
+
         var url = $"/{itemId}?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
