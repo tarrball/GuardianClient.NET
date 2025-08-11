@@ -7,7 +7,7 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>GuardianClient.NET</PackageId>
-    <Version>0.2.1-alpha</Version>
+    <Version>0.3.0-alpha</Version>
     <Authors>Andrew Tarr</Authors>
     <Description>A .NET API wrapper for Guardian services</Description>
     <PackageTags>guardian;api;client;wrapper</PackageTags>
@@ -25,13 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Models\" />
+    <Folder Include="Extensions\"/>
+    <Folder Include="Models\"/>
   </ItemGroup>
 
 </Project>
