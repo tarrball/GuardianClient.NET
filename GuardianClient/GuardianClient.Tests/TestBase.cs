@@ -6,7 +6,7 @@ namespace GuardianClient.Tests;
 
 public abstract class TestBase
 {
-    protected static GuardianApiClient ApiClient { get; }
+    protected static IGuardianApiClient ApiClient { get; }
 
     static TestBase()
     {

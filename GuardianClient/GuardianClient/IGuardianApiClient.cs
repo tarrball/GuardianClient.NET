@@ -48,5 +48,6 @@ public interface IGuardianApiClient
     Task<SingleItemResponse?> GetItemAsync(
         string itemId,
         GuardianApiContentAdditionalInformationOptions? options = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 }

@@ -28,6 +28,14 @@ internal static class UrlParameterBuilder
         }
     }
 
+    internal static void AddParameterIfAny<T>(List<string> parameters, string parameterName, T[]? values, Func<T, string> converter)
+    {
+        if (values is { Length: > 0 })
+        {
+            parameters.Add($"{parameterName}={string.Join(",", values.Select(v => Uri.EscapeDataString(converter(v))))}");
+        }
+    }
+
     internal static void AddQueryParameters(GuardianApiContentSearchOptions options, List<string> parameters)
     {
         AddParameterIfNotEmpty(parameters, "q", options.Query);
@@ -108,10 +116,10 @@ internal static class UrlParameterBuilder
         List<string> parameters
     )
     {
-        AddParameterIfAny(parameters, "show-fields", additionalOptions.ShowFields);
-        AddParameterIfAny(parameters, "show-tags", additionalOptions.ShowTags);
-        AddParameterIfAny(parameters, "show-elements", additionalOptions.ShowElements);
-        AddParameterIfAny(parameters, "show-references", additionalOptions.ShowReferences);
+        AddParameterIfAny(parameters, "show-fields", additionalOptions.ShowFields, f => f.ToApiString());
+        AddParameterIfAny(parameters, "show-tags", additionalOptions.ShowTags, t => t.ToApiString());
+        AddParameterIfAny(parameters, "show-elements", additionalOptions.ShowElements, e => e.ToApiString());
+        AddParameterIfAny(parameters, "show-references", additionalOptions.ShowReferences, r => r.ToApiString());
         AddParameterIfAny(parameters, "show-blocks", additionalOptions.ShowBlocks);
     }
 }

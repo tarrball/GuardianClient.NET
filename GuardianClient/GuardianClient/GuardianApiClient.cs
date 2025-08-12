@@ -88,11 +88,37 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
-        UrlParameterBuilder.AddParameterIfAny(parameters, "show-fields", options?.ShowFields);
-        UrlParameterBuilder.AddParameterIfAny(parameters, "show-tags", options?.ShowTags);
-        UrlParameterBuilder.AddParameterIfAny(parameters, "show-elements", options?.ShowElements);
-        UrlParameterBuilder.AddParameterIfAny(parameters, "show-references", options?.ShowReferences);
-        UrlParameterBuilder.AddParameterIfAny(parameters, "show-blocks", options?.ShowBlocks);
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-fields",
+            options?.ShowFields,
+            option => option.ToApiString()
+        );
+
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-tags",
+            options?.ShowTags,
+            option => option.ToApiString()
+        );
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-elements",
+            options?.ShowElements,
+            option => option.ToApiString()
+        );
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-references",
+            options?.ShowReferences,
+            option => option.ToApiString()
+        );
+
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-blocks",
+            options?.ShowBlocks
+        );
 
         var url = $"/{itemId}?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
