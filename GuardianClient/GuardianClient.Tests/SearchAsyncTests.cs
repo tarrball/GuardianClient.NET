@@ -125,8 +125,8 @@ public class SearchAsyncTests : TestBase
             PageOptions = new GuardianApiContentPageOptions { PageSize = 2 },
             AdditionalInformationOptions = new GuardianApiContentAdditionalInformationOptions
             {
-                ShowFields = [ShowFieldsOption.Headline, ShowFieldsOption.Thumbnail],
-                ShowTags = [ShowTagsOption.Keyword, ShowTagsOption.Tone]
+                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Thumbnail],
+                ShowTags = [GuardianApiContentShowTagsOption.Keyword, GuardianApiContentShowTagsOption.Tone]
             }
         });
 

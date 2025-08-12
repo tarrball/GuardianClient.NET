@@ -11,22 +11,22 @@ public class GuardianApiContentAdditionalInformationOptions
     /// <summary>
     /// Add fields associated with the content such as headline, body, thumbnail, etc.
     /// </summary>
-    public ShowFieldsOption[]? ShowFields { get; set; }
+    public GuardianApiContentShowFieldsOption[]? ShowFields { get; set; }
 
     /// <summary>
     /// Add associated metadata tags such as contributor, keyword, tone, etc.
     /// </summary>
-    public ShowTagsOption[]? ShowTags { get; set; }
+    public GuardianApiContentShowTagsOption[]? ShowTags { get; set; }
 
     /// <summary>
     /// Add associated media elements such as images, audio, and video.
     /// </summary>
-    public ShowElementsOption[]? ShowElements { get; set; }
+    public GuardianApiContentShowElementsOption[]? ShowElements { get; set; }
 
     /// <summary>
     /// Add associated reference data such as ISBNs, IMDB IDs, author references, etc.
     /// </summary>
-    public ShowReferencesOption[]? ShowReferences { get; set; }
+    public GuardianApiContentShowReferencesOption[]? ShowReferences { get; set; }
 
 
     /// <summary>

@@ -35,8 +35,8 @@ public class GuardianApiClientIntegrationTests : TestBase
         var detailedResult = await ApiClient.GetItemAsync(contentItem.Id,
             new GuardianApiContentAdditionalInformationOptions
             {
-                ShowFields = [ShowFieldsOption.Headline, ShowFieldsOption.Body],
-                ShowTags = [ShowTagsOption.Keyword]
+                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Body],
+                ShowTags = [GuardianApiContentShowTagsOption.Keyword]
             });
 
         detailedResult.ShouldNotBeNull("Detailed result should not be null");
@@ -45,10 +45,46 @@ public class GuardianApiClientIntegrationTests : TestBase
         detailedResult.Content.Fields.ShouldNotBeNull("Detailed fields should be populated");
         detailedResult.Content.Tags.ShouldNotBeNull("Tags should be populated");
 
-        Console.WriteLine($"End-to-end test successful:");
-        Console.WriteLine($"  Search found: {contentItem.WebTitle}");
-        Console.WriteLine($"  Retrieved same item with {detailedResult.Content.Tags.Count} tags");
-        Console.WriteLine($"  Body content length: {detailedResult.Content.Fields.Body?.Length ?? 0} characters");
+        Console.WriteLine("=== END-TO-END TEST RESULTS ===");
+        Console.WriteLine();
+        Console.WriteLine($"SEARCH RESULT:");
+        Console.WriteLine($"  Title: {contentItem.WebTitle}");
+        Console.WriteLine($"  Section: {contentItem.SectionName} ({contentItem.SectionId})");
+        Console.WriteLine($"  Published: {contentItem.WebPublicationDate}");
+        Console.WriteLine($"  URL: {contentItem.WebUrl}");
+        Console.WriteLine();
+        
+        Console.WriteLine($"DETAILED CONTENT:");
+        Console.WriteLine($"  ID: {detailedResult.Content.Id}");
+        Console.WriteLine($"  Headline: {detailedResult.Content.Fields.Headline ?? "N/A"}");
+        Console.WriteLine($"  Tags: {detailedResult.Content.Tags.Count} tags");
+        
+        if (detailedResult.Content.Tags.Any())
+        {
+            Console.WriteLine($"  Tag List:");
+            foreach (var tag in detailedResult.Content.Tags.Take(10)) // Show first 10 tags
+            {
+                Console.WriteLine($"    - {tag.WebTitle} ({tag.Type})");
+            }
+            if (detailedResult.Content.Tags.Count > 10)
+            {
+                Console.WriteLine($"    ... and {detailedResult.Content.Tags.Count - 10} more tags");
+            }
+        }
+        
+        Console.WriteLine();
+        Console.WriteLine($"FULL ARTICLE BODY:");
+        Console.WriteLine("==================");
+        if (!string.IsNullOrEmpty(detailedResult.Content.Fields.Body))
+        {
+            Console.WriteLine(detailedResult.Content.Fields.Body);
+        }
+        else
+        {
+            Console.WriteLine("No body content available");
+        }
+        Console.WriteLine("==================");
+        Console.WriteLine();
     }
 
     [TestMethod]
@@ -78,8 +114,8 @@ public class GuardianApiClientIntegrationTests : TestBase
             },
             AdditionalInformationOptions = new GuardianApiContentAdditionalInformationOptions
             {
-                ShowFields = [ShowFieldsOption.Headline, ShowFieldsOption.Score],
-                ShowTags = [ShowTagsOption.Tone]
+                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Score],
+                ShowTags = [GuardianApiContentShowTagsOption.Tone]
             }
         });
 
@@ -112,12 +148,12 @@ public class GuardianApiClientIntegrationTests : TestBase
             {
                 ShowFields =
                 [
-                    ShowFieldsOption.Headline,
-                    ShowFieldsOption.TrailText,
-                    ShowFieldsOption.ShowInRelatedContent
+                    GuardianApiContentShowFieldsOption.Headline,
+                    GuardianApiContentShowFieldsOption.TrailText,
+                    GuardianApiContentShowFieldsOption.ShowInRelatedContent
                 ],
-                ShowTags = [ShowTagsOption.Tone, ShowTagsOption.Type],
-                ShowElements = [ShowElementsOption.Image]
+                ShowTags = [GuardianApiContentShowTagsOption.Tone, GuardianApiContentShowTagsOption.Type],
+                ShowElements = [GuardianApiContentShowElementsOption.Image]
             }
         });
 

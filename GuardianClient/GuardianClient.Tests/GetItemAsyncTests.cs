@@ -23,7 +23,7 @@ public class GetItemAsyncTests : TestBase
 
         // Now get the specific item
         var singleItemResult = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions { ShowFields = [ShowFieldsOption.Body] });
+            new GuardianApiContentAdditionalInformationOptions { ShowFields = [GuardianApiContentShowFieldsOption.Body] });
 
         singleItemResult.ShouldNotBeNull("GetItem result should not be null");
         singleItemResult.Status.ShouldBe("ok", "API response status should be 'ok'");
@@ -97,10 +97,10 @@ public class GetItemAsyncTests : TestBase
             {
                 ShowFields =
                 [
-                    ShowFieldsOption.Headline,
-                    ShowFieldsOption.Body,
-                    ShowFieldsOption.Byline,
-                    ShowFieldsOption.Thumbnail
+                    GuardianApiContentShowFieldsOption.Headline,
+                    GuardianApiContentShowFieldsOption.Body,
+                    GuardianApiContentShowFieldsOption.Byline,
+                    GuardianApiContentShowFieldsOption.Thumbnail
                 ]
             });
 
@@ -130,7 +130,7 @@ public class GetItemAsyncTests : TestBase
         var result = await ApiClient.GetItemAsync(itemId,
             new GuardianApiContentAdditionalInformationOptions
             {
-                ShowTags = [ShowTagsOption.Keyword, ShowTagsOption.Tone, ShowTagsOption.Type]
+                ShowTags = [GuardianApiContentShowTagsOption.Keyword, GuardianApiContentShowTagsOption.Tone, GuardianApiContentShowTagsOption.Type]
             });
 
         result.ShouldNotBeNull();
@@ -160,7 +160,7 @@ public class GetItemAsyncTests : TestBase
         var result = await ApiClient.GetItemAsync(itemId,
             new GuardianApiContentAdditionalInformationOptions
             {
-                ShowElements = [ShowElementsOption.Image, ShowElementsOption.Video]
+                ShowElements = [GuardianApiContentShowElementsOption.Image, GuardianApiContentShowElementsOption.Video]
             });
 
         result.ShouldNotBeNull();
@@ -226,9 +226,9 @@ public class GetItemAsyncTests : TestBase
         var result = await ApiClient.GetItemAsync(itemId,
             new GuardianApiContentAdditionalInformationOptions
             {
-                ShowFields = [ShowFieldsOption.All],
-                ShowTags = [ShowTagsOption.All],
-                ShowElements = [ShowElementsOption.All],
+                ShowFields = [GuardianApiContentShowFieldsOption.All],
+                ShowTags = [GuardianApiContentShowTagsOption.All],
+                ShowElements = [GuardianApiContentShowElementsOption.All],
                 ShowBlocks = ["all"]
             });
 
