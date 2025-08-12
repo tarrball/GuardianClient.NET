@@ -90,9 +90,9 @@ internal static class UrlParameterBuilder
         {
             var orderByValue = orderOptions.OrderBy.Value switch
             {
-                GuardianApiOrderBy.Newest => "newest",
-                GuardianApiOrderBy.Oldest => "oldest",
-                GuardianApiOrderBy.Relevance => "relevance",
+                GuardianApiContentOrderBy.Newest => "newest",
+                GuardianApiContentOrderBy.Oldest => "oldest",
+                GuardianApiContentOrderBy.Relevance => "relevance",
                 _ => "newest"
             };
             parameters.Add($"order-by={orderByValue}");
@@ -102,9 +102,9 @@ internal static class UrlParameterBuilder
         {
             var orderDateValue = orderOptions.OrderDate.Value switch
             {
-                GuardianApiOrderDate.Published => "published",
-                GuardianApiOrderDate.NewspaperEdition => "newspaper-edition",
-                GuardianApiOrderDate.LastModified => "last-modified",
+                GuardianApiContentOrderDate.Published => "published",
+                GuardianApiContentOrderDate.NewspaperEdition => "newspaper-edition",
+                GuardianApiContentOrderDate.LastModified => "last-modified",
                 _ => "published"
             };
             parameters.Add($"order-date={orderDateValue}");

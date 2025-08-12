@@ -11,10 +11,10 @@ public class GuardianApiContentOrderOptions
     /// <summary>
     /// Returns results in the specified order. Defaults to Newest in most cases, or Relevance when a query parameter is specified.
     /// </summary>
-    public GuardianApiOrderBy? OrderBy { get; set; }
+    public GuardianApiContentOrderBy? OrderBy { get; set; }
 
     /// <summary>
     /// Changes which type of date is used to order the results. Defaults to Published.
     /// </summary>
-    public GuardianApiOrderDate? OrderDate { get; set; }
+    public GuardianApiContentOrderDate? OrderDate { get; set; }
 }
