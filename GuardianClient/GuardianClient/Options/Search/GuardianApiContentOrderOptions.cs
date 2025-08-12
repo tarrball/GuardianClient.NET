@@ -13,5 +13,5 @@ public class GuardianApiContentOrderOptions
     /// <summary>
     /// Changes which type of date is used to order the results. Defaults to Published.
     /// </summary>
-    public GuardianApiOrderDate OrderDate { get; set; }
+    public GuardianApiOrderDate? OrderDate { get; set; }
 }

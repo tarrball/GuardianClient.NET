@@ -3,7 +3,8 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Options for searching content using the Guardian API.
 /// </summary>
-public class GuardianApiContentSearchOptions
+public class
+    GuardianApiContentSearchOptions
 {
     /// <summary>
     /// Request content containing this free text. Supports AND, OR and NOT operators, and exact phrase queries using double quotes.

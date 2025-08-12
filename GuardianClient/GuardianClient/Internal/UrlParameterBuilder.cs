@@ -1,0 +1,117 @@
+using GuardianClient.Options.Search;
+
+namespace GuardianClient.Internal;
+
+internal static class UrlParameterBuilder
+{
+    internal static void AddParameterIfNotEmpty(List<string> parameters, string parameterName, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            parameters.Add($"{parameterName}={Uri.EscapeDataString(value)}");
+        }
+    }
+
+    internal static void AddParameterIfHasValue<T>(List<string> parameters, string parameterName, T? value) where T : struct
+    {
+        if (value.HasValue)
+        {
+            parameters.Add($"{parameterName}={value.Value}");
+        }
+    }
+
+    internal static void AddParameterIfAny(List<string> parameters, string parameterName, string[]? values)
+    {
+        if (values is { Length: > 0 })
+        {
+            parameters.Add($"{parameterName}={string.Join(",", values.Select(Uri.EscapeDataString))}");
+        }
+    }
+
+    internal static void AddQueryParameters(GuardianApiContentSearchOptions options, List<string> parameters)
+    {
+        AddParameterIfNotEmpty(parameters, "q", options.Query);
+        AddParameterIfAny(parameters, "query-fields", options.QueryFields);
+    }
+
+    internal static void AddFilterParameters(GuardianApiContentFilterOptions filterOptions, List<string> parameters)
+    {
+        AddParameterIfNotEmpty(parameters, "section", filterOptions.Section);
+        AddParameterIfNotEmpty(parameters, "reference", filterOptions.Reference);
+        AddParameterIfNotEmpty(parameters, "reference-type", filterOptions.ReferenceType);
+        AddParameterIfNotEmpty(parameters, "tag", filterOptions.Tag);
+        AddParameterIfNotEmpty(parameters, "rights", filterOptions.Rights);
+        AddParameterIfNotEmpty(parameters, "ids", filterOptions.Ids);
+        AddParameterIfNotEmpty(parameters, "production-office", filterOptions.ProductionOffice);
+        AddParameterIfNotEmpty(parameters, "lang", filterOptions.Language);
+
+        AddParameterIfHasValue(parameters, "star-rating", filterOptions.StarRating);
+    }
+
+    internal static void AddDateParameters(GuardianApiContentDateOptions dateOptions, List<string> parameters)
+    {
+        if (dateOptions.FromDate != default)
+        {
+            parameters.Add($"from-date={dateOptions.FromDate:yyyy-MM-dd}");
+        }
+
+        if (dateOptions.ToDate != default)
+        {
+            parameters.Add($"to-date={dateOptions.ToDate:yyyy-MM-dd}");
+        }
+
+        AddParameterIfNotEmpty(parameters, "use-date", dateOptions.UseDate);
+    }
+
+    internal static void AddPageParameters(GuardianApiContentPageOptions pageOptions, List<string> parameters)
+    {
+        if (pageOptions.Page > 0)
+        {
+            parameters.Add($"page={pageOptions.Page}");
+        }
+
+        if (pageOptions.PageSize > 0)
+        {
+            parameters.Add($"page-size={pageOptions.PageSize}");
+        }
+    }
+
+    internal static void AddOrderParameters(GuardianApiContentOrderOptions orderOptions, List<string> parameters)
+    {
+        if (orderOptions.OrderBy.HasValue)
+        {
+            var orderByValue = orderOptions.OrderBy.Value switch
+            {
+                GuardianApiOrderBy.Newest => "newest",
+                GuardianApiOrderBy.Oldest => "oldest",
+                GuardianApiOrderBy.Relevance => "relevance",
+                _ => "newest"
+            };
+            parameters.Add($"order-by={orderByValue}");
+        }
+
+        if (orderOptions.OrderDate.HasValue)
+        {
+            var orderDateValue = orderOptions.OrderDate.Value switch
+            {
+                GuardianApiOrderDate.Published => "published",
+                GuardianApiOrderDate.NewspaperEdition => "newspaper-edition",
+                GuardianApiOrderDate.LastModified => "last-modified",
+                _ => "published"
+            };
+            parameters.Add($"order-date={orderDateValue}");
+        }
+    }
+
+    internal static void AddAdditionalInformationParameters(
+        GuardianApiContentAdditionalInformationOptions additionalOptions,
+        List<string> parameters
+    )
+    {
+        AddParameterIfAny(parameters, "show-fields", additionalOptions.ShowFields);
+        AddParameterIfAny(parameters, "show-tags", additionalOptions.ShowTags);
+        AddParameterIfAny(parameters, "show-elements", additionalOptions.ShowElements);
+        AddParameterIfAny(parameters, "show-references", additionalOptions.ShowReferences);
+        AddParameterIfAny(parameters, "show-blocks", additionalOptions.ShowBlocks);
+    }
+}
