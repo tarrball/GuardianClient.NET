@@ -1,17 +1,15 @@
-using System.Reflection;
 using System.Text.Json;
+using GuardianClient.Internal;
 using GuardianClient.Models;
+using GuardianClient.Options.Search;
 
 namespace GuardianClient;
 
-public class GuardianApiClient : IDisposable
+public class GuardianApiClient : IGuardianApiClient, IDisposable
 {
     private readonly HttpClient _httpClient;
-
     private readonly string _apiKey;
-
     private readonly bool _ownsHttpClient;
-
     private bool _disposed;
 
     private const string BaseUrl = "https://content.guardianapis.com";
@@ -54,81 +52,21 @@ public class GuardianApiClient : IDisposable
         ConfigureHttpClient();
     }
 
-    private void ConfigureHttpClient()
-    {
-        var packageVersion = GetPackageVersion();
-
-        _httpClient.BaseAddress = new Uri(BaseUrl);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
-    }
-
-    private string GetPackageVersion()
-    {
-        var packageVersion = Assembly
-            .GetExecutingAssembly()
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
-            .InformationalVersion;
-
-        return packageVersion;
-    }
-
-    /// <summary>
-    /// Search for Guardian content
-    /// </summary>
-    /// <param name="query">Search query (supports AND, OR, NOT operators)</param>
-    /// <param name="pageSize">Number of results per page (1-50)</param>
-    /// <param name="page">Page number for pagination</param>
-    /// <param name="options">API options for including additional response data</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Content search results</returns>
     public async Task<ContentSearchResponse?> SearchAsync(
-        string? query = null,
-        int? pageSize = null,
-        int? page = null,
-        GuardianApiOptions? options = null,
-        CancellationToken cancellationToken = default)
+        GuardianApiContentSearchOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
+        options ??= new GuardianApiContentSearchOptions();
+
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            parameters.Add($"q={Uri.EscapeDataString(query)}");
-        }
-
-        if (pageSize.HasValue)
-        {
-            parameters.Add($"page-size={pageSize.Value}");
-        }
-
-        if (page.HasValue)
-        {
-            parameters.Add($"page={page.Value}");
-        }
-
-        if (options?.ShowFields?.Length > 0)
-        {
-            parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
-        }
-
-        if (options?.ShowTags?.Length > 0)
-        {
-            parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
-        }
-
-        if (options?.ShowElements?.Length > 0)
-        {
-            parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
-        }
-
-        if (options?.ShowReferences?.Length > 0)
-        {
-            parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
-        }
-
-        if (options?.ShowBlocks?.Length > 0)
-        {
-            parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
-        }
+        UrlParameterBuilder.AddQueryParameters(options, parameters);
+        UrlParameterBuilder.AddFilterParameters(options.FilterOptions, parameters);
+        UrlParameterBuilder.AddDateParameters(options.DateOptions, parameters);
+        UrlParameterBuilder.AddPageParameters(options.PageOptions, parameters);
+        UrlParameterBuilder.AddOrderParameters(options.OrderOptions, parameters);
+        UrlParameterBuilder.AddAdditionalInformationParameters(options.AdditionalInformationOptions, parameters);
 
         var url = $"/search?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
@@ -141,46 +79,46 @@ public class GuardianApiClient : IDisposable
         return wrapper?.Response;
     }
 
-    /// <summary>
-    /// Get a single content item by its ID/path
-    /// </summary>
-    /// <param name="itemId">The content item ID (path from Guardian API)</param>
-    /// <param name="options">API options for including additional response data</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Single item response with content details</returns>
     public async Task<SingleItemResponse?> GetItemAsync(
         string itemId,
-        GuardianApiOptions? options = null,
+        GuardianApiContentAdditionalInformationOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(itemId);
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
-        if (options?.ShowFields?.Length > 0)
-        {
-            parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
-        }
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-fields",
+            options?.ShowFields,
+            option => option.ToApiString()
+        );
 
-        if (options?.ShowTags?.Length > 0)
-        {
-            parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
-        }
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-tags",
+            options?.ShowTags,
+            option => option.ToApiString()
+        );
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-elements",
+            options?.ShowElements,
+            option => option.ToApiString()
+        );
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-references",
+            options?.ShowReferences,
+            option => option.ToApiString()
+        );
 
-        if (options?.ShowElements?.Length > 0)
-        {
-            parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
-        }
-
-        if (options?.ShowReferences?.Length > 0)
-        {
-            parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
-        }
-
-        if (options?.ShowBlocks?.Length > 0)
-        {
-            parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
-        }
+        UrlParameterBuilder.AddParameterIfAny(
+            parameters,
+            "show-blocks",
+            options?.ShowBlocks
+        );
 
         var url = $"/{itemId}?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
@@ -197,6 +135,14 @@ public class GuardianApiClient : IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    private void ConfigureHttpClient()
+    {
+        var packageVersion = AssemblyInfo.GetPackageVersion();
+
+        _httpClient.BaseAddress = new Uri(BaseUrl);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
     }
 
     /// <summary>
