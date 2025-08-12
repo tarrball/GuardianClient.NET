@@ -1,3 +1,5 @@
+using GuardianClient.Options.Search;
+
 namespace GuardianClient.Tests;
 
 using Shouldly;
@@ -45,7 +47,7 @@ public class GuardianApiClientTests : TestBase
 
         var contentItem = searchResult.Results.First();
         var itemId = contentItem.Id;
-        var singleItemResult = await ApiClient.GetItemAsync(itemId, new GuardianApiOptions { ShowFields = ["body"] });
+        var singleItemResult = await ApiClient.GetItemAsync(itemId, new GuardianApiContentAdditionalInformationOptions { ShowFields = ["body"] });
 
         singleItemResult.ShouldNotBeNull("GetItem result should not be null");
         singleItemResult.Status.ShouldBe("ok", "API response status should be 'ok'");

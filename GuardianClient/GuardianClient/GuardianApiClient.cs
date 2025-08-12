@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using GuardianClient.Models;
+using GuardianClient.Options.Search;
 
 namespace GuardianClient;
 
@@ -72,6 +73,7 @@ public class GuardianApiClient : IDisposable
         return packageVersion;
     }
 
+    // TODO comment out of date
     /// <summary>
     /// Search for Guardian content
     /// </summary>
@@ -82,53 +84,53 @@ public class GuardianApiClient : IDisposable
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Content search results</returns>
     public async Task<ContentSearchResponse?> SearchAsync(
-        string? query = null,
-        int? pageSize = null,
-        int? page = null,
-        GuardianApiOptions? options = null,
-        CancellationToken cancellationToken = default)
+        GuardianApiContentSearchOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
+        options ??= new GuardianApiContentSearchOptions();
+
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            parameters.Add($"q={Uri.EscapeDataString(query)}");
-        }
-
-        if (pageSize.HasValue)
-        {
-            parameters.Add($"page-size={pageSize.Value}");
-        }
-
-        if (page.HasValue)
-        {
-            parameters.Add($"page={page.Value}");
-        }
-
-        if (options?.ShowFields?.Length > 0)
-        {
-            parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
-        }
-
-        if (options?.ShowTags?.Length > 0)
-        {
-            parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
-        }
-
-        if (options?.ShowElements?.Length > 0)
-        {
-            parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
-        }
-
-        if (options?.ShowReferences?.Length > 0)
-        {
-            parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
-        }
-
-        if (options?.ShowBlocks?.Length > 0)
-        {
-            parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
-        }
+        // if (!string.IsNullOrWhiteSpace(query))
+        // {
+        //     parameters.Add($"q={Uri.EscapeDataString(query)}");
+        // }
+        //
+        // if (pageSize.HasValue)
+        // {
+        //     parameters.Add($"page-size={pageSize.Value}");
+        // }
+        //
+        // if (page.HasValue)
+        // {
+        //     parameters.Add($"page={page.Value}");
+        // }
+        //
+        // if (options?.ShowFields?.Length > 0)
+        // {
+        //     parameters.Add($"show-fields={string.Join(",", options.ShowFields)}");
+        // }
+        //
+        // if (options?.ShowTags?.Length > 0)
+        // {
+        //     parameters.Add($"show-tags={string.Join(",", options.ShowTags)}");
+        // }
+        //
+        // if (options?.ShowElements?.Length > 0)
+        // {
+        //     parameters.Add($"show-elements={string.Join(",", options.ShowElements)}");
+        // }
+        //
+        // if (options?.ShowReferences?.Length > 0)
+        // {
+        //     parameters.Add($"show-references={string.Join(",", options.ShowReferences)}");
+        // }
+        //
+        // if (options?.ShowBlocks?.Length > 0)
+        // {
+        //     parameters.Add($"show-blocks={string.Join(",", options.ShowBlocks)}");
+        // }
 
         var url = $"/search?{string.Join("&", parameters)}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
@@ -150,7 +152,7 @@ public class GuardianApiClient : IDisposable
     /// <returns>Single item response with content details</returns>
     public async Task<SingleItemResponse?> GetItemAsync(
         string itemId,
-        GuardianApiOptions? options = null,
+        GuardianApiContentAdditionalInformationOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(itemId);
