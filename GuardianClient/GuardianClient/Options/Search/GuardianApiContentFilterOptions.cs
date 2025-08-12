@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace GuardianClient.Options.Search;
 
 /// <summary>
 /// Options for filtering content search results by various criteria.
 /// </summary>
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class GuardianApiContentFilterOptions
 {
     /// <summary>

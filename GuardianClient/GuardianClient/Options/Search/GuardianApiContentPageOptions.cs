@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace GuardianClient.Options.Search;
 
 /// <summary>
 /// Options for controlling pagination of search results.
 /// </summary>
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class GuardianApiContentPageOptions
 {
     /// <summary>
