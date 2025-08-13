@@ -7,13 +7,13 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>GuardianClient.NET</PackageId>
-    <Version>0.4.0-alpha</Version>
+    <Version>0.5.0-alpha</Version>
     <Authors>Andrew Tarr</Authors>
     <Description>A .NET API wrapper for Guardian services</Description>
     <PackageTags>guardian;api;client;wrapper</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/tarrball/GuardianClient.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/tarrball/GuardianClient.NET</RepositoryUrl>
+    <RepositoryUrl>https://github.com/tarrball/GuardianClient.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryBranch>main</RepositoryBranch>
     <PackageReadmeFile>README.md</PackageReadmeFile>

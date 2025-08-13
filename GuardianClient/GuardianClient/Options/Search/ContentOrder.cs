@@ -3,7 +3,7 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Specifies the order in which search results should be returned.
 /// </summary>
-public enum GuardianApiContentOrderBy
+public enum ContentOrder
 {
     /// <summary>
     /// Order by newest content first. Default in all other cases.

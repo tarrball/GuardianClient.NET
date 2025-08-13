@@ -6,7 +6,7 @@ namespace GuardianClient.Options.Search;
 /// Options for controlling pagination of search results.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-public class GuardianApiContentPageOptions
+public class PageOptions
 {
     /// <summary>
     /// Return only the result set from a particular page.

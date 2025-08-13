@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using GuardianClient.Internal;
 using GuardianClient.Models;
@@ -52,12 +53,20 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         ConfigureHttpClient();
     }
 
+    private void ConfigureHttpClient()
+    {
+        var packageVersion = AssemblyInfo.GetPackageVersion();
+
+        _httpClient.BaseAddress = new Uri(BaseUrl);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
+    }
+
     public async Task<ContentSearchResponse?> SearchAsync(
-        GuardianApiContentSearchOptions? options = null,
+        SearchOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        options ??= new GuardianApiContentSearchOptions();
+        options ??= new SearchOptions();
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
@@ -69,6 +78,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         UrlParameterBuilder.AddAdditionalInformationParameters(options.AdditionalInformationOptions, parameters);
 
         var url = $"/search?{string.Join("&", parameters)}";
+        DebugWriteLine($"Guardian API URL: {BaseUrl}{url}");
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
         response.EnsureSuccessStatusCode();
@@ -81,7 +91,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
 
     public async Task<SingleItemResponse?> GetItemAsync(
         string itemId,
-        GuardianApiContentAdditionalInformationOptions? options = null,
+        AdditionalInformationOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(itemId);
@@ -101,12 +111,14 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
             options?.ShowTags,
             option => option.ToApiString()
         );
+
         UrlParameterBuilder.AddParameterIfAny(
             parameters,
             "show-elements",
             options?.ShowElements,
             option => option.ToApiString()
         );
+
         UrlParameterBuilder.AddParameterIfAny(
             parameters,
             "show-references",
@@ -121,6 +133,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         );
 
         var url = $"/{itemId}?{string.Join("&", parameters)}";
+        DebugWriteLine($"Guardian API URL: {BaseUrl}{url}");
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
         response.EnsureSuccessStatusCode();
@@ -131,18 +144,16 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         return wrapper?.Response;
     }
 
+    [Conditional("DEBUG")]
+    private static void DebugWriteLine(string message)
+    {
+        Debug.WriteLine(message);
+    }
+
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
-    }
-
-    private void ConfigureHttpClient()
-    {
-        var packageVersion = AssemblyInfo.GetPackageVersion();
-
-        _httpClient.BaseAddress = new Uri(BaseUrl);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
     }
 
     /// <summary>

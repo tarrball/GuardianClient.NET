@@ -9,22 +9,22 @@ public class SearchAsyncTests : TestBase
     [TestMethod]
     public async Task SearchAsync_WithQuery_ReturnsResults()
     {
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "climate change",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 5 }
+            PageOptions = new PageOptions { PageSize = 5 }
         });
 
-        result.ShouldNotBeNull("Search result should not be null");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBeGreaterThan(0, "Should return at least one result");
-        result.Results.Count.ShouldBeLessThanOrEqualTo(5, "Should not return more than requested page size");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeGreaterThan(0);
+        result.Results.Count.ShouldBeLessThanOrEqualTo(5);
 
         var firstItem = result.Results.First();
-        firstItem.Id.ShouldNotBeNullOrEmpty("Content item should have an ID");
-        firstItem.WebTitle.ShouldNotBeNullOrEmpty("Content item should have a title");
-        firstItem.WebUrl.ShouldNotBeNullOrEmpty("Content item should have a web URL");
-        firstItem.ApiUrl.ShouldNotBeNullOrEmpty("Content item should have an API URL");
+        firstItem.Id.ShouldNotBeNullOrEmpty();
+        firstItem.WebTitle.ShouldNotBeNullOrEmpty();
+        firstItem.WebUrl.ShouldNotBeNullOrEmpty();
+        firstItem.ApiUrl.ShouldNotBeNullOrEmpty();
 
         Console.WriteLine($"Found {result.Results.Count} articles about climate change");
         Console.WriteLine($"First article: {firstItem.WebTitle}");
@@ -34,25 +34,25 @@ public class SearchAsyncTests : TestBase
     [TestMethod]
     public async Task SearchAsync_WithNonExistentQuery_ReturnsNoResults()
     {
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "xyzabc123nonexistentquery456"
         });
 
-        result.ShouldNotBeNull("Search result should not be null even with no matches");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBe(0, "Should return zero results for non-existent query");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBe(0);
     }
 
     [TestMethod]
     public async Task SearchAsync_WithNoOptions_ReturnsDefaultResults()
     {
-        var result = await ApiClient.SearchAsync();
+        var result = await Client.SearchAsync();
 
-        result.ShouldNotBeNull("Search result should not be null");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBeGreaterThan(0, "Should return results with default options");
-        result.Results.Count.ShouldBeLessThanOrEqualTo(10, "Default page size should be 10 or less");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeGreaterThan(0);
+        result.Results.Count.ShouldBeLessThanOrEqualTo(10);
 
         Console.WriteLine($"Default search returned {result.Results.Count} results");
     }
@@ -60,24 +60,24 @@ public class SearchAsyncTests : TestBase
     [TestMethod]
     public async Task SearchAsync_WithFilterOptions_ReturnsFilteredResults()
     {
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "technology",
-            FilterOptions = new GuardianApiContentFilterOptions
+            FilterOptions = new FilterOptions
             {
                 Section = "technology"
             },
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 3 }
+            PageOptions = new PageOptions { PageSize = 3 }
         });
 
-        result.ShouldNotBeNull("Search result should not be null");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBeGreaterThan(0, "Should return technology results");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeGreaterThan(0);
 
         // Check that results are from technology section
         foreach (var item in result.Results)
         {
-            item.SectionId.ShouldBe("technology", "All results should be from technology section");
+            item.SectionId.ShouldBe("technology");
         }
 
         Console.WriteLine($"Found {result.Results.Count} technology articles");
@@ -86,19 +86,19 @@ public class SearchAsyncTests : TestBase
     [TestMethod]
     public async Task SearchAsync_WithOrderOptions_ReturnsOrderedResults()
     {
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "sports",
-            OrderOptions = new GuardianApiContentOrderOptions
+            OrderOptions = new OrderOptions
             {
-                OrderBy = GuardianApiContentOrderBy.Oldest
+                OrderBy = ContentOrder.Oldest
             },
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 2 }
+            PageOptions = new PageOptions { PageSize = 2 }
         });
 
-        result.ShouldNotBeNull("Search result should not be null");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBeGreaterThan(0, "Should return sports results");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeGreaterThan(0);
 
         // Oldest first means first result should be older than or equal to second
         if (result.Results.Count >= 2)
@@ -108,8 +108,7 @@ public class SearchAsyncTests : TestBase
 
             if (first.WebPublicationDate.HasValue && second.WebPublicationDate.HasValue)
             {
-                first.WebPublicationDate.Value.ShouldBeLessThanOrEqualTo(second.WebPublicationDate.Value,
-                    "Results should be ordered oldest first");
+                first.WebPublicationDate.Value.ShouldBeLessThanOrEqualTo(second.WebPublicationDate.Value);
             }
         }
 
@@ -119,24 +118,25 @@ public class SearchAsyncTests : TestBase
     [TestMethod]
     public async Task SearchAsync_WithAdditionalInformation_ReturnsEnhancedResults()
     {
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "environment",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 2 },
-            AdditionalInformationOptions = new GuardianApiContentAdditionalInformationOptions
+            PageOptions = new PageOptions { PageSize = 2 },
+            AdditionalInformationOptions = new AdditionalInformationOptions
             {
-                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Thumbnail],
-                ShowTags = [GuardianApiContentShowTagsOption.Keyword, GuardianApiContentShowTagsOption.Tone]
+                ShowFields =
+                    [ContentField.Headline, ContentField.Thumbnail],
+                ShowTags = [ContentTag.Keyword, ContentTag.Tone]
             }
         });
 
-        result.ShouldNotBeNull("Search result should not be null");
-        result.Status.ShouldBe("ok", "API response status should be 'ok'");
-        result.Results.Count.ShouldBeGreaterThan(0, "Should return environment results");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeGreaterThan(0);
 
         var firstItem = result.Results.First();
-        firstItem.Fields.ShouldNotBeNull("Fields should be populated");
-        firstItem.Tags.ShouldNotBeNull("Tags should be populated");
+        firstItem.Fields.ShouldNotBeNull();
+        firstItem.Tags.ShouldNotBeNull();
 
         Console.WriteLine($"Enhanced search returned {result.Results.Count} environment articles");
         Console.WriteLine($"First article has {firstItem.Tags.Count} tags");

@@ -10,27 +10,27 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithValidId_ReturnsItem()
     {
         // First get a valid item ID from search
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "technology",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
-        searchResult.ShouldNotBeNull("Search should return results");
-        searchResult.Results.Count.ShouldBe(1, "Should return exactly one result");
+        searchResult.ShouldNotBeNull();
+        searchResult.Results.Count.ShouldBe(1);
 
         var contentItem = searchResult.Results.First();
         var itemId = contentItem.Id;
 
         // Now get the specific item
-        var singleItemResult = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions { ShowFields = [GuardianApiContentShowFieldsOption.Body] });
+        var singleItemResult = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions { ShowFields = [ContentField.Body] });
 
-        singleItemResult.ShouldNotBeNull("GetItem result should not be null");
-        singleItemResult.Status.ShouldBe("ok", "API response status should be 'ok'");
-        singleItemResult.Content.ShouldNotBeNull("Content should not be null");
-        singleItemResult.Content.Id.ShouldBe(itemId, "Returned content ID should match requested ID");
-        singleItemResult.Content.WebTitle.ShouldNotBeNullOrEmpty("Content should have a title");
-        singleItemResult.Content.Fields.ShouldNotBeNull("Fields should be populated when ShowFields is specified");
+        singleItemResult.ShouldNotBeNull();
+        singleItemResult.Status.ShouldBe("ok");
+        singleItemResult.Content.ShouldNotBeNull();
+        singleItemResult.Content.Id.ShouldBe(itemId);
+        singleItemResult.Content.WebTitle.ShouldNotBeNullOrEmpty();
+        singleItemResult.Content.Fields.ShouldNotBeNull();
 
         Console.WriteLine($"Retrieved item: {singleItemResult.Content.WebTitle}");
         Console.WriteLine($"Item ID: {singleItemResult.Content.Id}");
@@ -51,7 +51,7 @@ public class GetItemAsyncTests : TestBase
 
         var exception = await Should.ThrowAsync<HttpRequestException>(async () =>
         {
-            await ApiClient.GetItemAsync(invalidId);
+            await Client.GetItemAsync(invalidId);
         });
 
         Console.WriteLine($"Expected exception for invalid ID: {exception.Message}");
@@ -62,7 +62,7 @@ public class GetItemAsyncTests : TestBase
     {
         var exception = await Should.ThrowAsync<ArgumentException>(async () =>
         {
-            await ApiClient.GetItemAsync(null!);
+            await Client.GetItemAsync(null!);
         });
 
         Console.WriteLine($"Expected exception for null ID: {exception.Message}");
@@ -73,7 +73,7 @@ public class GetItemAsyncTests : TestBase
     {
         var exception = await Should.ThrowAsync<ArgumentException>(async () =>
         {
-            await ApiClient.GetItemAsync("");
+            await Client.GetItemAsync("");
         });
 
         Console.WriteLine($"Expected exception for empty ID: {exception.Message}");
@@ -83,30 +83,30 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithShowFields_ReturnsEnhancedContent()
     {
         // Get a valid item ID
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "politics",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
 
         var itemId = searchResult.Results.First().Id;
 
         // Request with multiple fields
-        var result = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions
+        var result = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions
             {
                 ShowFields =
                 [
-                    GuardianApiContentShowFieldsOption.Headline,
-                    GuardianApiContentShowFieldsOption.Body,
-                    GuardianApiContentShowFieldsOption.Byline,
-                    GuardianApiContentShowFieldsOption.Thumbnail
+                    ContentField.Headline,
+                    ContentField.Body,
+                    ContentField.Byline,
+                    ContentField.Thumbnail
                 ]
             });
 
         result.ShouldNotBeNull();
-        result.Content.Fields.ShouldNotBeNull("Fields should be populated");
-        result.Content.Fields.Headline.ShouldNotBeNullOrEmpty("Headline should be populated");
+        result.Content.Fields.ShouldNotBeNull();
+        result.Content.Fields.Headline.ShouldNotBeNullOrEmpty();
 
         Console.WriteLine($"Enhanced content for: {result.Content.WebTitle}");
         Console.WriteLine($"Headline: {result.Content.Fields.Headline}");
@@ -118,24 +118,24 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithShowTags_ReturnsContentWithTags()
     {
         // Get a valid item ID
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "sport",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
 
         var itemId = searchResult.Results.First().Id;
 
         // Request with tags
-        var result = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions
+        var result = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions
             {
-                ShowTags = [GuardianApiContentShowTagsOption.Keyword, GuardianApiContentShowTagsOption.Tone, GuardianApiContentShowTagsOption.Type]
+                ShowTags = [ContentTag.Keyword, ContentTag.Tone, ContentTag.Type]
             });
 
         result.ShouldNotBeNull();
-        result.Content.Tags.ShouldNotBeNull("Tags should be populated");
-        result.Content.Tags.Count.ShouldBeGreaterThan(0, "Should have at least one tag");
+        result.Content.Tags.ShouldNotBeNull();
+        result.Content.Tags.Count.ShouldBeGreaterThan(0);
 
         Console.WriteLine($"Content '{result.Content.WebTitle}' has {result.Content.Tags.Count} tags:");
         foreach (var tag in result.Content.Tags.Take(5)) // Show first 5 tags
@@ -148,19 +148,19 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithShowElements_ReturnsContentWithElements()
     {
         // Get a valid item ID
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "music",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
 
         var itemId = searchResult.Results.First().Id;
 
         // Request with elements
-        var result = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions
+        var result = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions
             {
-                ShowElements = [GuardianApiContentShowElementsOption.Image, GuardianApiContentShowElementsOption.Video]
+                ShowElements = [ContentElement.Image, ContentElement.Video]
             });
 
         result.ShouldNotBeNull();
@@ -181,17 +181,17 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithShowBlocks_ReturnsContentWithBlocks()
     {
         // Get a valid item ID
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "news",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
 
         var itemId = searchResult.Results.First().Id;
 
         // Request with blocks using string array (as it's still string-based)
-        var result = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions
+        var result = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions
             {
                 ShowBlocks = ["main", "body"]
             });
@@ -214,27 +214,27 @@ public class GetItemAsyncTests : TestBase
     public async Task GetItemAsync_WithAllOptions_ReturnsFullyEnhancedContent()
     {
         // Get a valid item ID
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "culture",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 }
+            PageOptions = new PageOptions { PageSize = 1 }
         });
 
         var itemId = searchResult.Results.First().Id;
 
         // Request with all enhancement options
-        var result = await ApiClient.GetItemAsync(itemId,
-            new GuardianApiContentAdditionalInformationOptions
+        var result = await Client.GetItemAsync(itemId,
+            new AdditionalInformationOptions
             {
-                ShowFields = [GuardianApiContentShowFieldsOption.All],
-                ShowTags = [GuardianApiContentShowTagsOption.All],
-                ShowElements = [GuardianApiContentShowElementsOption.All],
+                ShowFields = [ContentField.All],
+                ShowTags = [ContentTag.All],
+                ShowElements = [ContentElement.All],
                 ShowBlocks = ["all"]
             });
 
         result.ShouldNotBeNull();
-        result.Content.Fields.ShouldNotBeNull("All fields should be populated");
-        result.Content.Tags.ShouldNotBeNull("All tags should be populated");
+        result.Content.Fields.ShouldNotBeNull();
+        result.Content.Tags.ShouldNotBeNull();
 
         Console.WriteLine($"Fully enhanced content: {result.Content.WebTitle}");
         Console.WriteLine($"  Fields populated: Yes");

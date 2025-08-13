@@ -6,7 +6,7 @@ namespace GuardianClient.Options.Search;
 /// Options for searching content using the Guardian API.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-public class GuardianApiContentSearchOptions
+public class SearchOptions
 {
     /// <summary>
     /// Request content containing this free text. Supports AND, OR and NOT operators, and exact phrase queries using double quotes.
@@ -23,25 +23,25 @@ public class GuardianApiContentSearchOptions
     /// <summary>
     /// Options for requesting additional information to be included with search results.
     /// </summary>
-    public GuardianApiContentAdditionalInformationOptions AdditionalInformationOptions { get; set; } = new();
+    public AdditionalInformationOptions AdditionalInformationOptions { get; set; } = new();
 
     /// <summary>
     /// Options for filtering search results by various criteria.
     /// </summary>
-    public GuardianApiContentFilterOptions FilterOptions { get; set; } = new();
+    public FilterOptions FilterOptions { get; set; } = new();
 
     /// <summary>
     /// Options for filtering search results by date ranges.
     /// </summary>
-    public GuardianApiContentDateOptions DateOptions { get; set; } = new();
+    public DateOptions DateOptions { get; set; } = new();
 
     /// <summary>
     /// Options for controlling pagination of search results.
     /// </summary>
-    public GuardianApiContentPageOptions PageOptions { get; set; } = new();
+    public PageOptions PageOptions { get; set; } = new();
 
     /// <summary>
     /// Options for controlling the ordering of search results.
     /// </summary>
-    public GuardianApiContentOrderOptions OrderOptions { get; set; } = new();
+    public OrderOptions OrderOptions { get; set; } = new();
 }

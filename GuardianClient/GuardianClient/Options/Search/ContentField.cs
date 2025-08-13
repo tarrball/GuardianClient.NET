@@ -3,7 +3,7 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Fields that can be included with content responses.
 /// </summary>
-public enum GuardianApiContentShowFieldsOption
+public enum ContentField
 {
     TrailText,
     Headline,

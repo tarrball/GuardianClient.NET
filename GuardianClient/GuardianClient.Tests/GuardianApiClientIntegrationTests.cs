@@ -9,41 +9,41 @@ public class GuardianApiClientIntegrationTests : TestBase
     [TestMethod]
     public void ApiClient_ShouldNotBeNull()
     {
-        ApiClient.ShouldNotBeNull("API client should be properly initialized");
-        ApiClient.ShouldBeAssignableTo<IGuardianApiClient>("API client should implement the interface");
+        Client.ShouldNotBeNull();
+        Client.ShouldBeAssignableTo<IGuardianApiClient>();
     }
 
     [TestMethod]
     public async Task EndToEnd_SearchAndGetItem_WorksTogether()
     {
         // Search for content
-        var searchResult = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var searchResult = await Client.SearchAsync(new SearchOptions
         {
             Query = "artificial intelligence",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 },
-            FilterOptions = new GuardianApiContentFilterOptions
+            PageOptions = new PageOptions { PageSize = 1 },
+            FilterOptions = new FilterOptions
             {
                 Section = "technology"
             }
         });
 
-        searchResult.ShouldNotBeNull("Search should return results");
-        searchResult.Results.Count.ShouldBe(1, "Should return exactly one result");
+        searchResult.ShouldNotBeNull();
+        searchResult.Results.Count.ShouldBe(1);
 
         // Get the specific item with enhanced information
         var contentItem = searchResult.Results.First();
-        var detailedResult = await ApiClient.GetItemAsync(contentItem.Id,
-            new GuardianApiContentAdditionalInformationOptions
+        var detailedResult = await Client.GetItemAsync(contentItem.Id,
+            new AdditionalInformationOptions
             {
-                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Body],
-                ShowTags = [GuardianApiContentShowTagsOption.Keyword]
+                ShowFields = [ContentField.Headline, ContentField.Body],
+                ShowTags = [ContentTag.Keyword]
             });
 
-        detailedResult.ShouldNotBeNull("Detailed result should not be null");
-        detailedResult.Content!.Id.ShouldBe(contentItem.Id, "IDs should match");
-        detailedResult.Content.WebTitle.ShouldBe(contentItem.WebTitle, "Titles should match");
-        detailedResult.Content.Fields.ShouldNotBeNull("Detailed fields should be populated");
-        detailedResult.Content.Tags.ShouldNotBeNull("Tags should be populated");
+        detailedResult.ShouldNotBeNull();
+        detailedResult.Content!.Id.ShouldBe(contentItem.Id);
+        detailedResult.Content.WebTitle.ShouldBe(contentItem.WebTitle);
+        detailedResult.Content.Fields.ShouldNotBeNull();
+        detailedResult.Content.Tags.ShouldNotBeNull();
 
         Console.WriteLine("=== END-TO-END TEST RESULTS ===");
         Console.WriteLine();
@@ -53,12 +53,12 @@ public class GuardianApiClientIntegrationTests : TestBase
         Console.WriteLine($"  Published: {contentItem.WebPublicationDate}");
         Console.WriteLine($"  URL: {contentItem.WebUrl}");
         Console.WriteLine();
-        
+
         Console.WriteLine($"DETAILED CONTENT:");
         Console.WriteLine($"  ID: {detailedResult.Content.Id}");
         Console.WriteLine($"  Headline: {detailedResult.Content.Fields.Headline ?? "N/A"}");
         Console.WriteLine($"  Tags: {detailedResult.Content.Tags.Count} tags");
-        
+
         if (detailedResult.Content.Tags.Any())
         {
             Console.WriteLine($"  Tag List:");
@@ -66,12 +66,13 @@ public class GuardianApiClientIntegrationTests : TestBase
             {
                 Console.WriteLine($"    - {tag.WebTitle} ({tag.Type})");
             }
+
             if (detailedResult.Content.Tags.Count > 10)
             {
                 Console.WriteLine($"    ... and {detailedResult.Content.Tags.Count - 10} more tags");
             }
         }
-        
+
         Console.WriteLine();
         Console.WriteLine($"FULL ARTICLE BODY:");
         Console.WriteLine("==================");
@@ -83,6 +84,7 @@ public class GuardianApiClientIntegrationTests : TestBase
         {
             Console.WriteLine("No body content available");
         }
+
         Console.WriteLine("==================");
         Console.WriteLine();
     }
@@ -91,44 +93,44 @@ public class GuardianApiClientIntegrationTests : TestBase
     public async Task SearchWithComplexOptions_ReturnsExpectedResults()
     {
         // Test a complex search with multiple option types
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "climate change",
             QueryFields = ["body", "headline"],
-            FilterOptions = new GuardianApiContentFilterOptions
+            FilterOptions = new FilterOptions
             {
                 Section = "environment"
             },
-            DateOptions = new GuardianApiContentDateOptions
+            DateOptions = new DateOptions
             {
                 FromDate = new DateOnly(2023, 1, 1)
             },
-            PageOptions = new GuardianApiContentPageOptions
+            PageOptions = new PageOptions
             {
                 Page = 1,
                 PageSize = 5
             },
-            OrderOptions = new GuardianApiContentOrderOptions
+            OrderOptions = new OrderOptions
             {
-                OrderBy = GuardianApiContentOrderBy.Relevance
+                OrderBy = ContentOrder.Relevance
             },
-            AdditionalInformationOptions = new GuardianApiContentAdditionalInformationOptions
+            AdditionalInformationOptions = new AdditionalInformationOptions
             {
-                ShowFields = [GuardianApiContentShowFieldsOption.Headline, GuardianApiContentShowFieldsOption.Score],
-                ShowTags = [GuardianApiContentShowTagsOption.Tone]
+                ShowFields = [ContentField.Headline, ContentField.Score],
+                ShowTags = [ContentTag.Tone]
             }
         });
 
-        result.ShouldNotBeNull("Complex search should return results");
-        result.Status.ShouldBe("ok", "API should respond successfully");
-        result.Results.Count.ShouldBeLessThanOrEqualTo(5, "Should respect page size");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
+        result.Results.Count.ShouldBeLessThanOrEqualTo(5);
 
         // Verify enhanced data is present
         if (result.Results.Any())
         {
             var firstItem = result.Results.First();
-            firstItem.Fields.ShouldNotBeNull("Enhanced fields should be present");
-            firstItem.Tags.ShouldNotBeNull("Tags should be present");
+            firstItem.Fields.ShouldNotBeNull();
+            firstItem.Tags.ShouldNotBeNull();
 
             Console.WriteLine($"Complex search returned {result.Results.Count} results");
             Console.WriteLine($"First result: {firstItem.WebTitle}");
@@ -140,25 +142,25 @@ public class GuardianApiClientIntegrationTests : TestBase
     public async Task TypeSafetyTest_EnumsMapToCorrectApiValues()
     {
         // This test ensures our enums map to the correct API values
-        var result = await ApiClient.SearchAsync(new GuardianApiContentSearchOptions
+        var result = await Client.SearchAsync(new SearchOptions
         {
             Query = "test",
-            PageOptions = new GuardianApiContentPageOptions { PageSize = 1 },
-            AdditionalInformationOptions = new GuardianApiContentAdditionalInformationOptions
+            PageOptions = new PageOptions { PageSize = 1 },
+            AdditionalInformationOptions = new AdditionalInformationOptions
             {
                 ShowFields =
                 [
-                    GuardianApiContentShowFieldsOption.Headline,
-                    GuardianApiContentShowFieldsOption.TrailText,
-                    GuardianApiContentShowFieldsOption.ShowInRelatedContent
+                    ContentField.Headline,
+                    ContentField.TrailText,
+                    ContentField.ShowInRelatedContent
                 ],
-                ShowTags = [GuardianApiContentShowTagsOption.Tone, GuardianApiContentShowTagsOption.Type],
-                ShowElements = [GuardianApiContentShowElementsOption.Image]
+                ShowTags = [ContentTag.Tone, ContentTag.Type],
+                ShowElements = [ContentElement.Image]
             }
         });
 
-        result.ShouldNotBeNull("Type safety test should work");
-        result.Status.ShouldBe("ok", "API should accept enum-mapped values");
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe("ok");
 
         if (result.Results.Any())
         {
@@ -168,5 +170,27 @@ public class GuardianApiClientIntegrationTests : TestBase
             Console.WriteLine($"  Tags populated: {item.Tags != null}");
             Console.WriteLine($"  Elements populated: {item.Elements != null}");
         }
+    }
+
+    [TestMethod]
+    public async Task SimpleSearch()
+    {
+        var result = await Client.SearchAsync(new SearchOptions
+        {
+            AdditionalInformationOptions = new AdditionalInformationOptions
+            {
+                ShowFields = [ContentField.Body],
+                ShowElements = [ContentElement.Image]
+            },
+            PageOptions = new PageOptions
+            {
+                Page = 0,
+                PageSize = 10
+            }
+        });
+
+        var body = result?.Results.First(r => r.Type == "article").Fields?.Body;
+
+        body.ShouldNotBeNull();
     }
 }

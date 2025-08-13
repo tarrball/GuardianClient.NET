@@ -3,7 +3,7 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Reference types that can be included with content responses.
 /// </summary>
-public enum GuardianApiContentShowReferencesOption
+public enum Reference
 {
     Author,
     BisacPrefix,
