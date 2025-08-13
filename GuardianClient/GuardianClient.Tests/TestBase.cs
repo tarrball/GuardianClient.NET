@@ -6,7 +6,7 @@ namespace GuardianClient.Tests;
 
 public abstract class TestBase
 {
-    protected static IGuardianApiClient ApiClient { get; }
+    protected static IGuardianApiClient Client { get; }
 
     static TestBase()
     {
@@ -16,7 +16,7 @@ public abstract class TestBase
 
         var apiKey = config["GuardianApiKey"]!;
 
-        ApiClient = new ServiceCollection()
+        Client = new ServiceCollection()
             .AddGuardianApiClient(apiKey)
             .BuildServiceProvider()
             .GetRequiredService<GuardianApiClient>();

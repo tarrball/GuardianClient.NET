@@ -53,11 +53,11 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
     }
 
     public async Task<ContentSearchResponse?> SearchAsync(
-        GuardianApiContentSearchOptions? options = null,
+        SearchOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        options ??= new GuardianApiContentSearchOptions();
+        options ??= new SearchOptions();
 
         var parameters = new List<string> { $"api-key={Uri.EscapeDataString(_apiKey)}" };
 
@@ -81,7 +81,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
 
     public async Task<SingleItemResponse?> GetItemAsync(
         string itemId,
-        GuardianApiContentAdditionalInformationOptions? options = null,
+        AdditionalInformationOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(itemId);

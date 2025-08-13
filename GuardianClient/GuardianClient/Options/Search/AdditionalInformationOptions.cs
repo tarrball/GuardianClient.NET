@@ -6,27 +6,27 @@ namespace GuardianClient.Options.Search;
 /// Options for requesting additional information to be included with search results.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-public class GuardianApiContentAdditionalInformationOptions
+public class AdditionalInformationOptions
 {
     /// <summary>
     /// Add fields associated with the content such as headline, body, thumbnail, etc.
     /// </summary>
-    public GuardianApiContentShowFieldsOption[]? ShowFields { get; set; }
+    public ContentField[]? ShowFields { get; set; }
 
     /// <summary>
     /// Add associated metadata tags such as contributor, keyword, tone, etc.
     /// </summary>
-    public GuardianApiContentShowTagsOption[]? ShowTags { get; set; }
+    public ContentTag[]? ShowTags { get; set; }
 
     /// <summary>
     /// Add associated media elements such as images, audio, and video.
     /// </summary>
-    public GuardianApiContentShowElementsOption[]? ShowElements { get; set; }
+    public ContentElement[]? ShowElements { get; set; }
 
     /// <summary>
     /// Add associated reference data such as ISBNs, IMDB IDs, author references, etc.
     /// </summary>
-    public GuardianApiContentShowReferencesOption[]? ShowReferences { get; set; }
+    public Reference[]? ShowReferences { get; set; }
 
 
     /// <summary>

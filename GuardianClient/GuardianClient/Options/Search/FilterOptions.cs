@@ -6,7 +6,7 @@ namespace GuardianClient.Options.Search;
 /// Options for filtering content search results by various criteria.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-public class GuardianApiContentFilterOptions
+public class FilterOptions
 {
     /// <summary>
     /// Return only content in those sections. Supports boolean operators.

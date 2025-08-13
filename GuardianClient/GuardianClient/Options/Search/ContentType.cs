@@ -3,7 +3,7 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Specifies which type of date is used to order the results.
 /// </summary>
-public enum GuardianApiContentOrderDate
+public enum ContentType
 {
     /// <summary>
     /// The date the content appeared on the web. Default.

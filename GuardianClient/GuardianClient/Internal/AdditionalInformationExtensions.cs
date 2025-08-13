@@ -7,89 +7,89 @@ namespace GuardianClient.Internal;
 /// </summary>
 internal static class AdditionalInformationExtensions
 {
-    internal static string ToApiString(this GuardianApiContentShowFieldsOption option) => option switch
+    internal static string ToApiString(this ContentField option) => option switch
     {
-        GuardianApiContentShowFieldsOption.TrailText => "trailText",
-        GuardianApiContentShowFieldsOption.Headline => "headline",
-        GuardianApiContentShowFieldsOption.ShowInRelatedContent => "showInRelatedContent",
-        GuardianApiContentShowFieldsOption.Body => "body",
-        GuardianApiContentShowFieldsOption.LastModified => "lastModified",
-        GuardianApiContentShowFieldsOption.HasStoryPackage => "hasStoryPackage",
-        GuardianApiContentShowFieldsOption.Score => "score",
-        GuardianApiContentShowFieldsOption.Standfirst => "standfirst",
-        GuardianApiContentShowFieldsOption.ShortUrl => "shortUrl",
-        GuardianApiContentShowFieldsOption.Thumbnail => "thumbnail",
-        GuardianApiContentShowFieldsOption.Wordcount => "wordcount",
-        GuardianApiContentShowFieldsOption.Commentable => "commentable",
-        GuardianApiContentShowFieldsOption.IsPremoderated => "isPremoderated",
-        GuardianApiContentShowFieldsOption.AllowUgc => "allowUgc",
-        GuardianApiContentShowFieldsOption.Byline => "byline",
-        GuardianApiContentShowFieldsOption.Publication => "publication",
-        GuardianApiContentShowFieldsOption.InternalPageCode => "internalPageCode",
-        GuardianApiContentShowFieldsOption.ProductionOffice => "productionOffice",
-        GuardianApiContentShowFieldsOption.ShouldHideAdverts => "shouldHideAdverts",
-        GuardianApiContentShowFieldsOption.LiveBloggingNow => "liveBloggingNow",
-        GuardianApiContentShowFieldsOption.CommentCloseDate => "commentCloseDate",
-        GuardianApiContentShowFieldsOption.StarRating => "starRating",
-        GuardianApiContentShowFieldsOption.All => "all",
+        ContentField.TrailText => "trailText",
+        ContentField.Headline => "headline",
+        ContentField.ShowInRelatedContent => "showInRelatedContent",
+        ContentField.Body => "body",
+        ContentField.LastModified => "lastModified",
+        ContentField.HasStoryPackage => "hasStoryPackage",
+        ContentField.Score => "score",
+        ContentField.Standfirst => "standfirst",
+        ContentField.ShortUrl => "shortUrl",
+        ContentField.Thumbnail => "thumbnail",
+        ContentField.Wordcount => "wordcount",
+        ContentField.Commentable => "commentable",
+        ContentField.IsPremoderated => "isPremoderated",
+        ContentField.AllowUgc => "allowUgc",
+        ContentField.Byline => "byline",
+        ContentField.Publication => "publication",
+        ContentField.InternalPageCode => "internalPageCode",
+        ContentField.ProductionOffice => "productionOffice",
+        ContentField.ShouldHideAdverts => "shouldHideAdverts",
+        ContentField.LiveBloggingNow => "liveBloggingNow",
+        ContentField.CommentCloseDate => "commentCloseDate",
+        ContentField.StarRating => "starRating",
+        ContentField.All => "all",
         _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
     };
 
-    internal static string ToApiString(this GuardianApiContentShowTagsOption option) => option switch
+    internal static string ToApiString(this ContentTag option) => option switch
     {
-        GuardianApiContentShowTagsOption.Blog => "blog",
-        GuardianApiContentShowTagsOption.Contributor => "contributor",
-        GuardianApiContentShowTagsOption.Keyword => "keyword",
-        GuardianApiContentShowTagsOption.NewspaperBook => "newspaper-book",
-        GuardianApiContentShowTagsOption.NewspaperBookSection => "newspaper-book-section",
-        GuardianApiContentShowTagsOption.Publication => "publication",
-        GuardianApiContentShowTagsOption.Series => "series",
-        GuardianApiContentShowTagsOption.Tone => "tone",
-        GuardianApiContentShowTagsOption.Type => "type",
-        GuardianApiContentShowTagsOption.All => "all",
+        ContentTag.Blog => "blog",
+        ContentTag.Contributor => "contributor",
+        ContentTag.Keyword => "keyword",
+        ContentTag.NewspaperBook => "newspaper-book",
+        ContentTag.NewspaperBookSection => "newspaper-book-section",
+        ContentTag.Publication => "publication",
+        ContentTag.Series => "series",
+        ContentTag.Tone => "tone",
+        ContentTag.Type => "type",
+        ContentTag.All => "all",
         _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
     };
 
-    internal static string ToApiString(this GuardianApiContentShowElementsOption option) => option switch
+    internal static string ToApiString(this ContentElement option) => option switch
     {
-        GuardianApiContentShowElementsOption.Audio => "audio",
-        GuardianApiContentShowElementsOption.Image => "image",
-        GuardianApiContentShowElementsOption.Video => "video",
-        GuardianApiContentShowElementsOption.All => "all",
+        ContentElement.Audio => "audio",
+        ContentElement.Image => "image",
+        ContentElement.Video => "video",
+        ContentElement.All => "all",
         _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
     };
 
-    internal static string ToApiString(this GuardianApiContentShowReferencesOption option) => option switch
+    internal static string ToApiString(this Reference option) => option switch
     {
-        GuardianApiContentShowReferencesOption.Author => "author",
-        GuardianApiContentShowReferencesOption.BisacPrefix => "bisac-prefix",
-        GuardianApiContentShowReferencesOption.EsaCricketMatch => "esa-cricket-match",
-        GuardianApiContentShowReferencesOption.EsaFootballMatch => "esa-football-match",
-        GuardianApiContentShowReferencesOption.EsaFootballTeam => "esa-football-team",
-        GuardianApiContentShowReferencesOption.EsaFootballTournament => "esa-football-tournament",
-        GuardianApiContentShowReferencesOption.Isbn => "isbn",
-        GuardianApiContentShowReferencesOption.Imdb => "imdb",
-        GuardianApiContentShowReferencesOption.Musicbrainz => "musicbrainz",
-        GuardianApiContentShowReferencesOption.MusicbrainzGenre => "musicbrainzgenre",
-        GuardianApiContentShowReferencesOption.OptaCricketMatch => "opta-cricket-match",
-        GuardianApiContentShowReferencesOption.OptaFootballMatch => "opta-football-match",
-        GuardianApiContentShowReferencesOption.OptaFootballTeam => "opta-football-team",
-        GuardianApiContentShowReferencesOption.OptaFootballTournament => "opta-football-tournament",
-        GuardianApiContentShowReferencesOption.PaFootballCompetition => "pa-football-competition",
-        GuardianApiContentShowReferencesOption.PaFootballMatch => "pa-football-match",
-        GuardianApiContentShowReferencesOption.PaFootballTeam => "pa-football-team",
-        GuardianApiContentShowReferencesOption.R1Film => "r1-film",
-        GuardianApiContentShowReferencesOption.ReutersIndexRic => "reuters-index-ric",
-        GuardianApiContentShowReferencesOption.ReutersStockRic => "reuters-stock-ric",
-        GuardianApiContentShowReferencesOption.WitnessAssignment => "witness-assignment",
+        Reference.Author => "author",
+        Reference.BisacPrefix => "bisac-prefix",
+        Reference.EsaCricketMatch => "esa-cricket-match",
+        Reference.EsaFootballMatch => "esa-football-match",
+        Reference.EsaFootballTeam => "esa-football-team",
+        Reference.EsaFootballTournament => "esa-football-tournament",
+        Reference.Isbn => "isbn",
+        Reference.Imdb => "imdb",
+        Reference.Musicbrainz => "musicbrainz",
+        Reference.MusicbrainzGenre => "musicbrainzgenre",
+        Reference.OptaCricketMatch => "opta-cricket-match",
+        Reference.OptaFootballMatch => "opta-football-match",
+        Reference.OptaFootballTeam => "opta-football-team",
+        Reference.OptaFootballTournament => "opta-football-tournament",
+        Reference.PaFootballCompetition => "pa-football-competition",
+        Reference.PaFootballMatch => "pa-football-match",
+        Reference.PaFootballTeam => "pa-football-team",
+        Reference.R1Film => "r1-film",
+        Reference.ReutersIndexRic => "reuters-index-ric",
+        Reference.ReutersStockRic => "reuters-stock-ric",
+        Reference.WitnessAssignment => "witness-assignment",
         _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
     };
 
-    internal static string ToApiString(this GuardianApiContentShowRightsOption option) => option switch
+    internal static string ToApiString(this ContentRight option) => option switch
     {
-        GuardianApiContentShowRightsOption.Syndicatable => "syndicatable",
-        GuardianApiContentShowRightsOption.SubscriptionDatabases => "subscription-databases",
-        GuardianApiContentShowRightsOption.All => "all",
+        ContentRight.Syndicatable => "syndicatable",
+        ContentRight.SubscriptionDatabases => "subscription-databases",
+        ContentRight.All => "all",
         _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
     };
 }

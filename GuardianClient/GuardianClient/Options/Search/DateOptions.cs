@@ -3,7 +3,7 @@ namespace GuardianClient.Options.Search;
 /// <summary>
 /// Options for filtering search results by date ranges.
 /// </summary>
-public class GuardianApiContentDateOptions
+public class DateOptions
 {
     /// <summary>
     /// Return only content published on or after that date.

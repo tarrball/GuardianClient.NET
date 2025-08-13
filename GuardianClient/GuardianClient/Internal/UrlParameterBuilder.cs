@@ -36,13 +36,13 @@ internal static class UrlParameterBuilder
         }
     }
 
-    internal static void AddQueryParameters(GuardianApiContentSearchOptions options, List<string> parameters)
+    internal static void AddQueryParameters(SearchOptions options, List<string> parameters)
     {
         AddParameterIfNotEmpty(parameters, "q", options.Query);
         AddParameterIfAny(parameters, "query-fields", options.QueryFields);
     }
 
-    internal static void AddFilterParameters(GuardianApiContentFilterOptions filterOptions, List<string> parameters)
+    internal static void AddFilterParameters(FilterOptions filterOptions, List<string> parameters)
     {
         AddParameterIfNotEmpty(parameters, "section", filterOptions.Section);
         AddParameterIfNotEmpty(parameters, "reference", filterOptions.Reference);
@@ -56,7 +56,7 @@ internal static class UrlParameterBuilder
         AddParameterIfHasValue(parameters, "star-rating", filterOptions.StarRating);
     }
 
-    internal static void AddDateParameters(GuardianApiContentDateOptions dateOptions, List<string> parameters)
+    internal static void AddDateParameters(DateOptions dateOptions, List<string> parameters)
     {
         if (dateOptions.FromDate != default)
         {
@@ -71,7 +71,7 @@ internal static class UrlParameterBuilder
         AddParameterIfNotEmpty(parameters, "use-date", dateOptions.UseDate);
     }
 
-    internal static void AddPageParameters(GuardianApiContentPageOptions pageOptions, List<string> parameters)
+    internal static void AddPageParameters(PageOptions pageOptions, List<string> parameters)
     {
         if (pageOptions.Page > 0)
         {
@@ -84,15 +84,15 @@ internal static class UrlParameterBuilder
         }
     }
 
-    internal static void AddOrderParameters(GuardianApiContentOrderOptions orderOptions, List<string> parameters)
+    internal static void AddOrderParameters(OrderOptions orderOptions, List<string> parameters)
     {
         if (orderOptions.OrderBy.HasValue)
         {
             var orderByValue = orderOptions.OrderBy.Value switch
             {
-                GuardianApiContentOrderBy.Newest => "newest",
-                GuardianApiContentOrderBy.Oldest => "oldest",
-                GuardianApiContentOrderBy.Relevance => "relevance",
+                ContentOrder.Newest => "newest",
+                ContentOrder.Oldest => "oldest",
+                ContentOrder.Relevance => "relevance",
                 _ => "newest"
             };
             parameters.Add($"order-by={orderByValue}");
@@ -102,9 +102,9 @@ internal static class UrlParameterBuilder
         {
             var orderDateValue = orderOptions.OrderDate.Value switch
             {
-                GuardianApiContentOrderDate.Published => "published",
-                GuardianApiContentOrderDate.NewspaperEdition => "newspaper-edition",
-                GuardianApiContentOrderDate.LastModified => "last-modified",
+                ContentType.Published => "published",
+                ContentType.NewspaperEdition => "newspaper-edition",
+                ContentType.LastModified => "last-modified",
                 _ => "published"
             };
             parameters.Add($"order-date={orderDateValue}");
@@ -112,7 +112,7 @@ internal static class UrlParameterBuilder
     }
 
     internal static void AddAdditionalInformationParameters(
-        GuardianApiContentAdditionalInformationOptions additionalOptions,
+        AdditionalInformationOptions additionalOptions,
         List<string> parameters
     )
     {

@@ -34,7 +34,7 @@ public interface IGuardianApiClient
     /// <para>For simple searches, you can create basic options: <c>new GuardianApiContentSearchOptions { Query = "your search terms" }</c></para>
     /// </remarks>
     Task<ContentSearchResponse?> SearchAsync(
-        GuardianApiContentSearchOptions? options = null,
+        SearchOptions? options = null,
         CancellationToken cancellationToken = default
     );
 
@@ -47,7 +47,7 @@ public interface IGuardianApiClient
     /// <returns>Single item response with content details</returns>
     Task<SingleItemResponse?> GetItemAsync(
         string itemId,
-        GuardianApiContentAdditionalInformationOptions? options = null,
+        AdditionalInformationOptions? options = null,
         CancellationToken cancellationToken = default
     );
 }
