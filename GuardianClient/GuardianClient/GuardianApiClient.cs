@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using GuardianClient.Internal;
 using GuardianClient.Models;
@@ -77,6 +78,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         UrlParameterBuilder.AddAdditionalInformationParameters(options.AdditionalInformationOptions, parameters);
 
         var url = $"/search?{string.Join("&", parameters)}";
+        DebugWriteLine($"Guardian API URL: {BaseUrl}{url}");
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
         response.EnsureSuccessStatusCode();
@@ -109,12 +111,14 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
             options?.ShowTags,
             option => option.ToApiString()
         );
+
         UrlParameterBuilder.AddParameterIfAny(
             parameters,
             "show-elements",
             options?.ShowElements,
             option => option.ToApiString()
         );
+
         UrlParameterBuilder.AddParameterIfAny(
             parameters,
             "show-references",
@@ -129,6 +133,7 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         );
 
         var url = $"/{itemId}?{string.Join("&", parameters)}";
+        DebugWriteLine($"Guardian API URL: {BaseUrl}{url}");
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
         response.EnsureSuccessStatusCode();
@@ -137,6 +142,12 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         var wrapper = JsonSerializer.Deserialize<ResponseWrapper<SingleItemResponse>>(content, _JsonOptions);
 
         return wrapper?.Response;
+    }
+
+    [Conditional("DEBUG")]
+    private static void DebugWriteLine(string message)
+    {
+        Debug.WriteLine(message);
     }
 
     public void Dispose()

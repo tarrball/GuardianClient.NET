@@ -179,8 +179,18 @@ public class GuardianApiClientIntegrationTests : TestBase
         {
             AdditionalInformationOptions = new AdditionalInformationOptions
             {
-                ShowFields = [ContentField.Body]
+                ShowFields = [ContentField.Body],
+                ShowElements = [ContentElement.Image]
+            },
+            PageOptions = new PageOptions
+            {
+                Page = 0,
+                PageSize = 10
             }
         });
+
+        var body = result?.Results.First(r => r.Type == "article").Fields?.Body;
+
+        body.ShouldNotBeNull();
     }
 }

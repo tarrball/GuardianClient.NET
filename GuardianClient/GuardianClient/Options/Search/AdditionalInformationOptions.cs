@@ -28,6 +28,10 @@ public class AdditionalInformationOptions
     /// </summary>
     public Reference[]? ShowReferences { get; set; }
 
+    /// <summary>
+    /// Add associated rights information such as syndicatable or subscription-databases.
+    /// </summary>
+    public ContentRight[]? ShowRights { get; set; }
 
     /// <summary>
     /// Add associated blocks (single block for content, one or more for liveblogs).

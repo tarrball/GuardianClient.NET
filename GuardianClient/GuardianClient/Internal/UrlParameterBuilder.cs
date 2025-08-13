@@ -120,6 +120,7 @@ internal static class UrlParameterBuilder
         AddParameterIfAny(parameters, "show-tags", additionalOptions.ShowTags, t => t.ToApiString());
         AddParameterIfAny(parameters, "show-elements", additionalOptions.ShowElements, e => e.ToApiString());
         AddParameterIfAny(parameters, "show-references", additionalOptions.ShowReferences, r => r.ToApiString());
+        AddParameterIfAny(parameters, "show-rights", additionalOptions.ShowRights, r => r.ToApiString());
         AddParameterIfAny(parameters, "show-blocks", additionalOptions.ShowBlocks);
     }
 }
