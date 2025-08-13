@@ -52,6 +52,14 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
         ConfigureHttpClient();
     }
 
+    private void ConfigureHttpClient()
+    {
+        var packageVersion = AssemblyInfo.GetPackageVersion();
+
+        _httpClient.BaseAddress = new Uri(BaseUrl);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
+    }
+
     public async Task<ContentSearchResponse?> SearchAsync(
         SearchOptions? options = null,
         CancellationToken cancellationToken = default
@@ -135,14 +143,6 @@ public class GuardianApiClient : IGuardianApiClient, IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
-    }
-
-    private void ConfigureHttpClient()
-    {
-        var packageVersion = AssemblyInfo.GetPackageVersion();
-
-        _httpClient.BaseAddress = new Uri(BaseUrl);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", $"GuardianClient.NET/{packageVersion}");
     }
 
     /// <summary>
